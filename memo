@@ -1,0 +1,20 @@
+1.compile ros:
+
+~/catkin_ws
+catkin_make
+source devel/setup.bash
+
+2. run ros
+rosrun  directory filename
+
+
+3. using namespace std; pour 
+    string
+    cout
+    cin
+    endl
+4. compile C++
+g++ -std=c++11 boring_movie.cpp -o boring_movie_compiled
+
+5.run C++
+./boring_movie_compiled
