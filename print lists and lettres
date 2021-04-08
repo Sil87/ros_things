@@ -1,0 +1,18 @@
+#include <string>
+
+using namespace std;
+
+int main() {
+
+  string name = "Hello";
+  for (int i = 0; i < 5; i += 1) {
+    cout << name[i] << endl;
+  }
+list<string> spells({"Lumos","Alohomora","Wingardium Leviosa","Crucio","Expecto Patronum"});
+
+for (string spell : spells) {
+    cout << spell << ", ";
+}
+cout << endl;
+  return 0;
+}
