@@ -20,3 +20,20 @@ g++ -std=c++11 boring_movie.cpp -o boring_movie_compiled
 
 5.run C++
 ./boring_movie_compiled
+
+
+6. 
+int* pointer;                   // non-constant pointer to non-constant integer
+const int* pointer;             // non-constant pointer to constant integer
+int* const pointer;             // constant pointer to non-constant integer
+const int* const pointer;       // constant pointer to constant integer
+
+7.
+int myarray[4] = {9,99,999,9999};
+int* start = myarray;
+int* stop = myarray + 4;
+int* currentpointer = start;
+while (currentpointer != stop) {  ++(*currentpointer);
+    ++currentpointer;
+}
+> 10,100,1000,10000
