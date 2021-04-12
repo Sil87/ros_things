@@ -1,7 +1,25 @@
 #include "rosbot_control/rosbot_class.h"
 #include <ros/ros.h>
 #include <list>
+#include <string>
 using namespace std;
+
+string trajectory (RosbotClass rosbot){
+
+  rosbot.turn("clockwise", 3);
+  cout << "Turn completed " << endl;
+  rosbot.move_forward(2.0);
+  cout << "Move completed" << endl;
+  rosbot.turn("counterclockwise", 3);
+  cout << "Turn completed" << endl;
+  rosbot.move_forward(10.0);
+  rosbot.turn("clockwise", 2);
+  rosbot.move_forward(3.0);
+
+string message= "trajectory succesfull!"
+return message; 
+}
+
 
 list<float> move_and_inform( RosbotClass rosbot, int n_secs) {
     
@@ -21,6 +39,11 @@ int main(int argc, char **argv) {
 
   RosbotClass rosbot;
   
+ 
+  string m = trajectory(rosbot);
+  cout << m << endl;
+  
+  
   list<float> list_coordinates = move_and_inform(rosbot,5.0);
   for (float coord : list_coordinates) {
     cout << coord << ", ";
@@ -30,3 +53,5 @@ int main(int argc, char **argv) {
   return 0;
     
 }
+
+
