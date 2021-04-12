@@ -37,3 +37,12 @@ while (currentpointer != stop) {  ++(*currentpointer);
     ++currentpointer;
 }
 > 10,100,1000,10000
+
+
+8.
+float *RosbotClass::get_laser_full() {
+  float *laser_range_pointer = laser_range.data();
+  return laser_range_pointer;
+}
+
+/*This function called get_laser_full() is a function that returns a pointer (see the operator asterisk before the name of the class RosbotClass). What it does is take the values of a ROS vector called laser_range and assign them a pointer, then return this pointer. */
