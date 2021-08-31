@@ -1,0 +1,69 @@
+
+#pragma once
+
+#include <mc_control/mc_controller.h>
+#include <mc_tasks/CoMTask.h>
+// #include <mc_tasks/EndEffectorTask.h>
+
+#include "api.h"
+
+struct Backpack_controller_DLLAPI Backpack_controller : public mc_control::MCController
+{
+    Backpack_controller(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration & config);
+
+    bool run() override;
+    void reset(const mc_control::ControllerResetData & reset_data) override;
+    
+    
+   // void switch_target();
+  //  void switch_com_target();
+
+  //  void parameters();
+    
+    //add the switch qui modifient le target  
+   // void switch_ef_target();
+
+
+    
+private:
+    mc_rtc::Configuration config_;
+  
+    
+   
+    //std::vector<std::string> activeJoints;
+
+    //unsigned int leftLegIndex;
+    //unsigned int rightLegIndex;
+    
+   
+ //unsigned int rightShoulderIndex = robot().jointIndexByName("R_SHOULDER_R");
+ //unsigned int leftShoulderIndex = robot().jointIndexByName("L_SHOULDER_R");
+    
+    //unsigned int currentLeftLeg;
+    //unsigned int currentRightLeg;
+    
+    
+    //std::vector <std::string> jointName = ["R_SHOULDER_R", "L_SHOULDER_R"];
+    //bool goingLeft = true; 
+    //bool comDown = true;
+    Eigen::Vector3d comZero;
+    float m_amplitude;
+    float m_frequency;
+    float m_phase;
+    float m_time;
+    float m_deltaTime;
+    float value;
+    double count = count + 1 ; 
+
+   //std::string jointName = "R_SHOULDER_R";
+   // int jointIndex = robot().jointIndexByName(jointName);
+
+
+   // std::shared_ptr<mc_tasks::EndEffectorTask> efTask; 
+    std::shared_ptr<mc_tasks::CoMTask> comTask;
+   // std::shared_ptr<mc_tasks::PostureTask> armTask;
+         
+}; 
+
+
+
