@@ -1,0 +1,185 @@
+#include "Backpack_controller.h"
+#include <mc_solver/ConstraintSetLoader.h>
+//#include <iostream>
+//#include <cmath>
+
+using namespace std;
+
+Backpack_controller::Backpack_controller(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration & config)
+: mc_control::MCController(rm, dt)
+{
+
+
+  config_.load(config);
+
+  static auto constraint = mc_solver::ConstraintSetLoader::load(solver(),config("collisions")[0]);
+
+
+  
+  solver().addConstraintSet(*constraint);
+  solver().addConstraintSet(contactConstraint);
+  solver().addConstraintSet(dynamicsConstraint);
+  solver().addTask(postureTask);
+  
+  //solver().addTask(armTask);
+ 
+   solver().setContacts({
+    {robots(), 0, 1, "LeftFoot", "AllGround"},
+    {robots(), 0, 1, "RightFoot", "AllGround"}
+  });
+
+  m_deltaTime = dt;
+  m_amplitude = 0.5;
+  m_frequency = 1;
+  m_phase = 0.0;
+  m_time = 0.0;
+ 
+ /*void selectActiveJoints(mc_solver::QPSolver & solver,
+                        const std::vector<std::string> & activeJointsName); 
+ 
+  
+  std::vector<std::string> activeJoints = {"R_SHOULDER_R", "L_SHOULDER_R"};
+                                         
+  auto postureTask = std::make_shared<mc_task::postureTask>(robots(), 0);                                       
+  postureTask->selectActiveJoints(solver(), activeJoints);
+   */
+  
+  
+ comTask = std::make_shared<mc_tasks::CoMTask>(robots(), 0, 10.0, 2000.0);
+  solver().addTask(comTask);
+  postureTask->stiffness(1);
+  
+  /*armTask = std::make_shared<mc_tasks::PostureTask>(solver(), robots().robotIndex(), 100, 10);
+  armTask->selectActiveJoints(solver(), {"R_SHOULDER_R", "L_SHOULDER_R"}); */
+
+
+
+  /*end effector task
+  efTask = std::make_shared<mc_tasks::EndEffectorTask>("l_wrist", robots(), 0, 5.0, 500.0);
+  solver().addTask(efTask); */
+  
+
+
+  mc_rtc::log::success("Backpack_controller init done ");
+}
+
+
+
+bool Backpack_controller::run()
+{ 
+  //  if(armTask->eval().norm() < 1)
+  // { 
+  //   switch_target();
+  // } 
+  
+  //auto arm_posture = robot().mbc().q;
+
+  
+
+  double t = count * m_deltaTime;
+
+  double omega  = 2*M_PI*m_frequency;
+
+  double value = m_amplitude*std::sin(t*omega + m_phase); 
+
+
+  comTask->com(comZero + value*Eigen::Vector3d{0, 0.1, 0});
+  
+  
+  /*
+  arm_posture[rightShoulderIndex][0] = value ;
+  arm_posture[leftShoulderIndex][0] =  m_amplitude- value;
+  armTask->posture(arm_posture); */
+  
+
+  // if(comTask->eval().norm() < 1)
+  // {
+  //   switch_com_target();
+    
+  // } 
+  
+  /* avec Ef 
+  if(efTask->eval().norm() < 0.1)
+  {
+    switch_ef_target();
+  } */
+  
+  
+  return mc_control::MCController::run();
+}
+
+
+
+
+void Backpack_controller::reset(const mc_control::ControllerResetData & reset_data)
+{
+  mc_control::MCController::reset(reset_data);
+ 
+   comTask->reset();
+   //armTask->reset();
+   
+   comZero = comTask->com();
+   
+  //print ComZero
+  // mc_rtc::log::info("current coM= {}", comZero);
+  
+  //avec End Effector
+    //efTask ->reset();
+}
+
+/* void  Backpack_controller::parameters()
+    {
+        // initialize values
+        m_amplitude = 0.5;
+        m_frequency = 1;
+        m_phase = 0.0;
+        m_time = 0.0;
+        m_deltaTime = 1 /m_time;
+    }
+
+
+
+  void Backpack_controller::switch_target()
+{
+  
+ for (int omega = 0; omega < 1000; ++omega) {
+            value = m_amplitude * sin(2 * M_PI * m_frequency * m_time + m_phase);
+            m_time += m_deltaTime; 
+           
+  } 
+
+  
+  
+
+   auto arm_posture = robot().mbc().q;
+
+  arm_posture[rightShoulderIndex][0] = value ;
+  arm_posture[leftShoulderIndex][0] = value + m_phase ;
+  armTask->posture(arm_posture); 
+  
+} 
+
+
+void Backpack_controller::switch_com_target()
+{ 
+ 
+    comTask->com(comZero + value*Eigen::Vector3d{0, 0.1, 0});
+  
+} */
+
+/*avec EF
+void Backpack_controller::switch_ef_target()
+{
+	auto pt = efTask->get_ef_pose();
+	efTask->set_ef_pose(sva::PTransformd{sva::RotY(-M_PI/2), Eigen::Vector3d{0.5, -0.5, 1.2}});
+
+} */
+
+ 
+
+CONTROLLER_CONSTRUCTOR("Backpack_controller", Backpack_controller)
+
+
+
+
+
